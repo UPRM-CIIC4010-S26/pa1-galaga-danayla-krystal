@@ -14,11 +14,14 @@ class Program {
         Background background = Background();
         Player* player = new Player((GetScreenWidth() / 2) - 15, GetScreenHeight() * 0.75f);
         int respawnCooldown = 1080;
+        int respawnRate = 1080;
+        const int minRespawnRate = 300;
         int respawns = 0;
         int count = 0;
         int delay = 0;
         int lives = 3;
         int pauseFrames = 0;
+        int nextLifeScore = 1000;
 
         bool startup = true;
         bool paused = false;

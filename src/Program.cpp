@@ -70,6 +70,13 @@ void Program::Update() {
         if (lives <= 0 && pauseFrames <= 0) gameOver = true;
         Projectile::CleanProjectiles();
         Projectile::ProjectileCollision();
+
+        while(Enemy::score >= nextLifeScore){
+            if(lives < 5){
+                lives++;
+            }
+            nextLifeScore += 1000;
+        }
     }
 }
 
@@ -97,16 +104,18 @@ void Program::Draw() {
 void Program::ManageEnemyRespawns() {
     delay = std::max(delay - 1, 0);
 
+    int difficultySteps = Enemy::score / 1000;
+    respawnRate = std::max(1080 - difficultySteps * 60, minRespawnRate);
+
     respawnCooldown -= 1;
     if (respawnCooldown <= 0) {
-        respawnCooldown = 1080;
+        respawnCooldown = respawnRate;
         for (std::pair<std::pair<float, float>, Enemy*>& p : Enemy::enemies) {
             if (!p.second && p.first.second != 150) {
                 int eType = GetRandomValue(1, 3);
 
                 if (eType == 1) {
                     p.second = new StEnemy(GetScreenWidth() / 2 - 15, 0, true);
-                    respawnCooldown /= 2;
                 } else {
                     p.second = new StdEnemy(GetScreenWidth() / 2 - 15, 0, true);
                 }
@@ -193,10 +202,12 @@ void Program::Reset() {
     StdEnemy::attackInProgress = false;
     player = new Player((GetScreenWidth() / 2) - 15, GetScreenHeight() * 0.75f);
     respawnCooldown = 1080;
+    respawnRate = 1080;
     respawns = 0;
     count = 0;
     delay = 0;
     lives = 3;
+    nextLifeScore = 1000;
 
       Enemy::enemies.push_back(std::pair<std::pair<float, float>, Enemy*> {
             std::pair<float, float>{350, 150}, 
