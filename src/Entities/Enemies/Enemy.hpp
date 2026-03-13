@@ -57,9 +57,13 @@ class Enemy {
                             p.second->health--;
                             p2.del = true;
                         }
+                        if(p.second->health > 0){
+                            PlaySound(SoundManager::hit); //added hit sound
+                        }
                     }
 
                     if (p.second->health <= 0) {
+                        PlaySound(SoundManager::dead); //added the sound
                         score +=p.second->ScoreValue;
                         Animation::animations.push_back(
                             Animation(p.second->position.first, p.second->position.second, 155, 0, 33, 33, 30, 30, 4, ImageManager::SpriteSheet)
